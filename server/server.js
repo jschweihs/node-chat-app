@@ -19,15 +19,15 @@ app.use(express.static(publicPath));
 io.on('connection', (socket) => {
   console.log('New user connected');
 
-  // Emit newEmail event on client
-  socket.emit('newMessage', {
-    from: 'jschweihs',
-    text: 'Hey, how are you doing?',
-    createdAt: 123
-  })
-
+  // Listen for new message
   socket.on('createMessage', (message) => {
     console.log('New Message:', message);
+
+    io.emit('newMessage', {
+      from: message.from,
+      text: message.text,
+      createdAt: new Date().getTime()
+    })
   });
   // Listener for user disconnection
   socket.on('disconnect', ()=> {

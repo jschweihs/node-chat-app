@@ -19,12 +19,29 @@ function scrollToBottom () {
 
 // New connection
 socket.on('connect', function () {
-  console.log('Connected to server');
+  var params = $.deparam(window.location.search);
+  socket.emit('join', params, function (err) {
+    if (err) {
+      alert(err);
+      window.location.href = "/";
+    } else {
+      console.log('no error');
+    }
+  });
 });
 
 // User disconnected
 socket.on('disconnect', function () {
   console.log('Disconnected from server');
+});
+
+// New user has joined the chat room
+socket.on('updateUserList', function (users) {
+  var ul = $('<ul></ul');
+  users.forEach(function (user) {
+    ul.append($('<li></li>').text(user));
+  });
+  $('#users').html(ul);
 });
 
 // Listening for new message
